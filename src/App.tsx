@@ -1,6 +1,5 @@
 import React from 'react';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from "recoil";
 import { PersistenceObserver, initializeState } from "app/src/atoms/persistence";
 import Routes from "app/src/Routes";
@@ -9,16 +8,15 @@ import Modal from "react-modal";
 
 function App() {
   Modal.setAppElement('#root');
-  const history = createBrowserHistory();
 
   return (
     <RecoilRoot initializeState={initializeState}>
       <PersistenceObserver />
-      <Router history={history}>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <MainLayout>
           <Routes />
         </MainLayout>
-      </Router>
+      </BrowserRouter>
     </RecoilRoot>
   );
 }
