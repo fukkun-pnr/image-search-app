@@ -5,5 +5,7 @@ type Props = {
 }
 
 export const Indicator: React.FC<Props> = React.memo((props: Props) => (
-    <div className="indicator" style={{ width: props.size, height: props.size }} />
+    <div className="indicator" style={{ width: props.size, height: props.size }}>
+        <img src="/img/oval.svg" alt="indicator" />
+    </div>
 ));

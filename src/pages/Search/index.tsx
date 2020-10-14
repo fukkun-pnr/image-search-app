@@ -14,7 +14,6 @@ export default () => {
             </form>
             {error && <p role="alert" className="error">{error.message}</p>}
             {searchResult ? <SearchResult photo={searchResult} /> : loading && <Indicator size={100} />}
-            <Indicator size={100} />
         </div>
     );
 };
