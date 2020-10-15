@@ -4,13 +4,8 @@ import { render } from "@testing-library/react";
 import * as searchHook from "app/src/hooks/search";
 import photoMock from "app/src/tests/fixtures/photo.json";
 
-jest.mock("app/src/pages/Search/SearchResult", () => ({
-    SearchResult: (props: any) => <div {...props} data-testid="search-result" />
-}));
-
-jest.mock("app/src/components/Indicator", () => ({
-    Indicator: (props: any) => <div {...props} data-testid="indicator" />
-}));
+jest.mock("app/src/pages/Search/SearchResult");
+jest.mock("app/src/components/Indicator");
 
 describe("pages/Search", () => {
     it("loading", () => {
