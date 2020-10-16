@@ -44,6 +44,11 @@ describe("pages/Search/SearchResult", () => {
 
         render(<SearchResult photo={photoMock} />);
     });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     it("check props", () => {
         const div = screen.getAllByRole("generic")[1];
         expect(div.style.backgroundImage).toBe('url(' + photoMock.urls.small + ')');

@@ -1,7 +1,9 @@
 import React from "react";
+import Modal from "react-modal";
 import { render } from '@testing-library/react';
 import { FavoriteConfirmModal } from "app/src/pages/Search/FavoriteConfirmModal";
-import Modal from "react-modal";
+import { FavoriteChoiceForm } from "app/src/pages/Search/FavoriteChoiceForm";
+import { FavoriteAddForm } from "app/src/pages/Search/FavoriteAddForm";
 
 jest.mock("app/src/pages/Search/FavoriteAddForm");
 jest.mock("app/src/pages/Search/FavoriteChoiceForm");
@@ -9,11 +11,23 @@ jest.mock("app/src/pages/Search/FavoriteChoiceForm");
 Modal.setAppElement(document.createElement('div'));
 
 describe("pages/Search/FavoriteConfirmModal", () => {
+    const addFavoriteMock = jest.fn();
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    const favoriteMock = {
+        id: "1",
+        title: "title",
+        description: "description",
+        photos: [],
+    }
     it("not open", () => {
         const wrapper = render(<FavoriteConfirmModal
             isOpen={false}
             closeModal={jest.fn()}
-            addFavorite={jest.fn()}
+            addFavorite={addFavoriteMock}
             favorites={[]}
         />);
 
@@ -25,7 +39,7 @@ describe("pages/Search/FavoriteConfirmModal", () => {
         const wrapper = render(<FavoriteConfirmModal
             isOpen={true}
             closeModal={jest.fn()}
-            addFavorite={jest.fn()}
+            addFavorite={addFavoriteMock}
             favorites={[]}
         />);
 
@@ -33,6 +47,49 @@ describe("pages/Search/FavoriteConfirmModal", () => {
         expect(wrapper.getByTestId("favorite-add-form")).toBeInTheDocument();
     });
 
-    it.todo("onAddSubmit");
-    it.todo("onChoiceSubmit");
+    it("onChoiceSubmit", () => {
+        render(<FavoriteConfirmModal
+            isOpen={true}
+            closeModal={jest.fn()}
+            addFavorite={addFavoriteMock}
+            favorites={[favoriteMock]}
+        />);
+
+        const choiceFormMock = FavoriteChoiceForm as jest.Mock;
+        choiceFormMock.mock.calls[0][0].onSubmit({ favoriteId: "0" });
+        expect(addFavoriteMock).not.toBeCalled();
+        choiceFormMock.mock.calls[0][0].onSubmit({ favoriteId: "1" });
+        expect(addFavoriteMock).toBeCalledWith(favoriteMock);
+    });
+
+    it("onAddSubmit", () => {
+        render(<FavoriteConfirmModal
+            isOpen={true}
+            closeModal={jest.fn()}
+            addFavorite={addFavoriteMock}
+            favorites={[favoriteMock]}
+        />);
+
+        const addFormMock = FavoriteAddForm as jest.Mock;
+
+        let formData = {
+            "title": "title2",
+            "description": "description2",
+        };
+        addFormMock.mock.calls[0][0].onSubmit(formData);
+        expect(addFavoriteMock).toBeCalledWith({
+            ...formData,
+            photos: [],
+        });
+
+        formData = {
+            "title": "title3",
+            "description": "description3",
+        };
+        addFormMock.mock.calls[0][0].onSubmit(formData);
+        expect(addFavoriteMock).toBeCalledWith({
+            ...formData,
+            photos: [],
+        });
+    });
 });
