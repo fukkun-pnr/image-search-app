@@ -9,7 +9,7 @@ type Props = {
     onSubmit: (data: App.Favorite) => void;
 }
 
-export const FavoriteCollection = React.memo((props: Props) => {
+export const FavoriteCollection: React.FC<Props> = React.memo((props: Props) => {
     const { isOpen: editable, toggle } = useToggle();
 
     const onSubmit = useCallback((data: App.FavoriteInputData) => {

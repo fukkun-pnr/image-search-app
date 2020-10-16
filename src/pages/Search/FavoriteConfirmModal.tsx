@@ -11,7 +11,7 @@ type Props = {
     favorites: App.FavoriteCollection;
 }
 
-export const FavoriteConfirmModal = (props: Props) => {
+export const FavoriteConfirmModal: React.FC<Props> = React.memo((props: Props) => {
     const onAddSubmit = (data: App.FavoriteInputData) => {
         const favorite = {
             ...data,
@@ -46,6 +46,6 @@ export const FavoriteConfirmModal = (props: Props) => {
             </div>
         </Modal>
     );
-};
+});
 
 

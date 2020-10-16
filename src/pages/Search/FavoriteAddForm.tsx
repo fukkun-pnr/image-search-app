@@ -6,7 +6,7 @@ type Props = {
     onSubmit: (data: App.FavoriteInputData) => void;
 };
 
-export const FavoriteAddForm: React.FC<Props> = (props: Props) => {
+export const FavoriteAddForm: React.FC<Props> = React.memo((props: Props) => {
     const { register, handleSubmit, errors } = useForm<App.FavoriteInputData>();
 
     return (
@@ -20,4 +20,4 @@ export const FavoriteAddForm: React.FC<Props> = (props: Props) => {
             <input type="submit" value="Add" />
         </form>
     );
-};
+});
