@@ -9,7 +9,7 @@ type Props = {
     photo: Unsplash.Photo;
 }
 
-export const SearchResult = (props: Props) => {
+export const SearchResult = React.memo((props: Props) => {
     const { isOpen, closeModal, openModal } = useModal();
     const { favorites, addFavorite } = useFavorite();
 
@@ -43,5 +43,5 @@ export const SearchResult = (props: Props) => {
             />
         </div >
     );
-}
+});
 

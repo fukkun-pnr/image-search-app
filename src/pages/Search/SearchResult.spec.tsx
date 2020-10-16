@@ -11,25 +11,34 @@ import * as utils from "app/src/utils";
 
 jest.mock("app/src/components/UserInfo");
 jest.mock("app/src/pages/Search/FavoriteConfirmModal");
+jest.mock("app/src/utils");
 
 describe("pages/Search/SearchResult", () => {
-    let addFavoriteMock: jest.Mock;
-    let updateFavoriteMock: jest.Mock;
-    let openModalMock: jest.Mock;
+    const addFavoriteMock = jest.fn();
+    const updateFavoriteMock = jest.fn();
+    const openModalMock = jest.fn();
+    const closeModalMock = jest.fn();
+    const favoriteMock = {
+        title: "title",
+        description: "description",
+        photos: [photoMock],
+    }
 
     beforeEach(() => {
-        addFavoriteMock = jest.fn();
-        updateFavoriteMock = jest.fn();
-        openModalMock = jest.fn();
+        addFavoriteMock.mockReset();
+        updateFavoriteMock.mockReset();
+        openModalMock.mockReset();
+        closeModalMock.mockReset();
+
         jest.spyOn(favoriteHook, "useFavorite").mockReturnValue({
-            favorites: [],
+            favorites: [favoriteMock],
             addFavorite: addFavoriteMock,
             updateFavorite: updateFavoriteMock,
         });
 
         jest.spyOn(modalHook, "useModal").mockReturnValue({
             isOpen: false,
-            closeModal: jest.fn(),
+            closeModal: closeModalMock,
             openModal: openModalMock,
         });
 
@@ -46,19 +55,31 @@ describe("pages/Search/SearchResult", () => {
         expect(screen.getByTestId("favorite-confirm-modal")).toBeInTheDocument();
 
         expect(FavoriteConfirmModal).toBeCalledWith({
-            favorites: [],
+            favorites: [favoriteMock],
             closeModal: expect.anything(),
             addFavorite: expect.anything(),
             isOpen: false,
         }, {});
     });
 
+    it("trigger onAddFavorite", () => {
+        const modalMock = FavoriteConfirmModal as jest.Mock;
+        modalMock.mock.calls[0][0].addFavorite(modalMock.mock.calls[0][0].favorites[0]);
+        expect(addFavoriteMock).toBeCalledWith(favoriteMock, photoMock);
+        expect(closeModalMock).toBeCalled();
+    });
+
+    it("trigger closeModal", () => {
+        const modalMock = FavoriteConfirmModal as jest.Mock;
+        modalMock.mock.calls[0][0].closeModal();
+        expect(closeModalMock).toBeCalled();
+    });
+
     it("click download", () => {
-        const spy = jest.spyOn(utils, "download").mockReturnValue();
         act(() => {
             userEvent.click(screen.getByRole("button", { name: "download" }));
         });
-        expect(spy).toBeCalledWith(photoMock.urls.regular, `${photoMock.id}.jpg`);
+        expect(utils.download).toBeCalledWith(photoMock.urls.regular, `${photoMock.id}.jpg`);
     });
 
     it("click save", () => {
